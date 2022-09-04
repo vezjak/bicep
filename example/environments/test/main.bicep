@@ -2,6 +2,8 @@ targetScope = 'subscription'
 
 param location string = deployment().location
 
+var env = 'test'
+
 resource rg 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: 'simple-rg'
   location: location
@@ -10,7 +12,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 module vnet '../../infrastructure/vnet.bicep' = {
   name: 'vnetDeployment'
   params: {
-    vnetName: 'simple-vnet'
+    vnetName: 'simple-${env}-${rg.location}-vnet'
     vnetAddressPrefix: '10.0.0.0/16'
     subnetName: 'simple-snet'
     subnetPrefix: '10.0.0.0/24'
@@ -57,7 +59,7 @@ module nic '../../infrastructure/nic.bicep' = {
 module vm_linux '../../infrastructure/vm-linux.bicep' = {
   name: 'vmLinDeployment'
   params: {
-    vmName: 'simpleLinux-vm'
+    vmName: 'simpleLinux-${env}-${rg.location}-vm'
     adminUsername: 'ladmin'
     authenticationType: 'password'
     adminPasswordOrKey: 'SuperSecurePassword1!'
